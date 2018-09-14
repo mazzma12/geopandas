@@ -1,0 +1,38 @@
+version: "3"
+networks:
+    postgresnet:
+
+services:
+    postgis:  
+        image: mdillon/postgis
+        hostname: postgis
+        container_name: postgis
+        environment:                                                            
+            - POSTGRES_USER=root
+            # - POSTGRES_PASSWORD=""
+            - POSTGRES_DB=test_geopandas    
+        networks:
+            - postgresnet
+        ports:
+            - 5432:5432
+        volumes:
+            - postgisdata:/var/lib/postgresql/data
+            - postgissocket:/var/run/postgresql
+    geopandas:
+        build: 
+            context: .
+        container_name: geopandas
+        hostname: geopandas
+        networks: 
+            - postgresnet
+        depends_on:
+            - postgis
+        tty: true
+        ports:
+            - 8889:8889
+        volumes:
+              - postgissocket:/var/run/postgresql
+volumes:
+    postgisdata:
+    postgissocket:
+
