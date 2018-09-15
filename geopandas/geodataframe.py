@@ -10,6 +10,7 @@ from six import string_types, PY3
 from geopandas.base import GeoPandasBase, _CoordinateIndexer
 from geopandas.geoseries import GeoSeries
 from geopandas.plotting import plot_dataframe
+from geopandas.geoplotting import plot_markers_with_mapbox
 import geopandas.io
 
 
@@ -535,6 +536,13 @@ class GeoDataFrame(GeoPandasBase, DataFrame):
 
     plot.__doc__ = plot_dataframe.__doc__
 
+    def iplot(self, **kwargs):
+        """
+        Wrapper method to call directly on a `gpd.GeoDataFrame`
+        """
+        return plot_markers_with_mapbox(self, **kwargs)
+
+    iplot.__doc__ += plot_markers_with_mapbox.__doc__
 
     def dissolve(self, by=None, aggfunc='first', as_index=True):
         """
