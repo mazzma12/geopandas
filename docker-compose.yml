@@ -31,6 +31,7 @@ services:
         ports:
             - 8889:8889
         volumes:
+              - ./geopandas:/usr/src/app/geopandas
               - postgissocket:/var/run/postgresql
 volumes:
     postgisdata:
