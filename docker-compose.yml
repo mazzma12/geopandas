@@ -16,8 +16,27 @@ services:
         ports:
             - 5432:5432
         volumes:
+            - ${HOME}/gis:/gis
             - postgisdata:/var/lib/postgresql/data
             - postgissocket:/var/run/postgresql
+    qgis:
+        image: kartoza/qgis-desktop:3.0
+        hostname: qgis-server
+        networks:
+            - postgresnet
+        volumes:
+            # Wherever you want to mount your data from
+            - ${HOME}/gis:/home/gis
+            # Unix socket for X11
+            - /tmp/.X11-unix:/tmp/.X11-unix
+        links:
+            - postgis:postgis
+        environment: 
+            - DISPLAY=unix$DISPLAY
+        ports:
+            - 3218:3218 # Enable plugin download
+        tty: true
+        command: /usr/bin/qgis
     geopandas:
         build: 
             context: .
