@@ -30,13 +30,15 @@ MAPBOX_ACCESS_TOKEN = os.environ.get('MAPBOX_ACCESS_TOKEN', None)
 def get_auto_zoom(gdf):
     lats = gdf.centroid.y
     lons = gdf.centroid.x
-    span = 6.5 - math.ceil(max(max(lats) - min(lats), max(lons) - min(lons))) / 10
+    span = 6.5 - math.ceil(max(max(lats) - min(lats),
+                               max(lons) - min(lons))) / 10
     span = 1 if span < 1 else span
     return span
 
 
 def plot_markers_with_mapbox(gdf, text=None, center=None, zoom=None, size=None, mode='markers', color='darkblue',
-                             style='basic', mapbox_access_token=None, return_fig=False, opacity=.5):
+                             style='basic', mapbox_access_token=None, return_fig=False, opacity=.5,
+                             animate_by=None):
     """
     Display geometry POINTS on a map with text columns as hoverinfo
 
@@ -48,7 +50,8 @@ def plot_markers_with_mapbox(gdf, text=None, center=None, zoom=None, size=None, 
         size (int): size of the markers
         mode (str): 'markers' or 'markers+text'
         color (str):
-        style (str): style of the map opassed to go.Layout 'satellite-streets', 'light', 'dark', 'basic', 'outdoors', 'satellite'
+        style (str): style of the map opassed to go.Layout 'satellite-streets', 'light', 'dark', 'basic', 'outdoors'
+            or 'satellite'
         mapbox_access_token (str): to override the environment variable if needed.
 
     References:
@@ -62,6 +65,7 @@ def plot_markers_with_mapbox(gdf, text=None, center=None, zoom=None, size=None, 
     if zoom is None:
         zoom = get_auto_zoom(gdf)
     if text:
+        text_col = text
         text = ['_'.join(map(str, vv)) for _, vv in gdf[text].iterrows()]
 
     # Centroids make sure iut works with polygons too
